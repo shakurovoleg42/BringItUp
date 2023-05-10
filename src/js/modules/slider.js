@@ -29,7 +29,7 @@ export default class Slider {
             }
         }catch(e){}
 
-        this.slides.forEach(slide => {
+        Array.from(this.slides).forEach(slide => {
             slide.style.display = 'none';
         });
 
