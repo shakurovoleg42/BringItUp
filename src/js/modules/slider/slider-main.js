@@ -40,23 +40,40 @@ export default class MainSlider extends Slider {
     }
 
     render() {
-        try {
-            this.hanson = document.querySelector('.hanson');
-        } catch(e){}
+        if (this.container) {
+            try {
+                this.hanson = document.querySelector('.hanson');
+            } catch(e){}
+    
+            this.btns.forEach(item => {
+                item.addEventListener('click', () => {
+                    this.plusSlides(1);
+    
+                });
+    
+                item.parentNode.previousElementSibling.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.slideIndex = 1;
+                    this.showSlides(this.slideIndex);
+                });
+            });
+            this.showSlides(this.slideIndex); 
 
-        this.btns.forEach(item => {
-            item.addEventListener('click', () => {
-                this.plusSlides(1);
-
+            document.querySelectorAll('.prevmodule').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    this.plusSlides(-1);
+                });
             });
 
-            item.parentNode.previousElementSibling.addEventListener('click', (e) => {
-                e.preventDefault();
-                this.slideIndex = 1;
-                this.showSlides(this.slideIndex);
+            document.querySelectorAll('.nextmodule').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    this.plusSlides(1);
+                });
             });
-        });
-
-        this.showSlides(this.slideIndex);
+        }
     }
 }
