@@ -3,11 +3,13 @@ export default class VideoPlayer {
         this.btns = document.querySelectorAll(triggers);
         this.overlay = document.querySelector(overlay);
         this.close = this.overlay.querySelector('.close');
+        this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
     }
 
     bindTriggers() {
         this.btns.forEach(btn => {
             btn.addEventListener('click', () => {
+                this.activeBtn = btn;
 
                 if (document.querySelector('iframe#frame')) {
                     this.overlay.style.display = 'flex';
@@ -35,11 +37,30 @@ export default class VideoPlayer {
         this.player = new YT.Player('frame', {
                 height: '100%',
                 width: '100%',
-                videoId: `${url}`
+                videoId: `${url}`,
+                events: {
+                    'onStateChange': this.onPlayerStateChange
+                }
         });
 
-        console.log(this.player);
         this.overlay.style.display = 'flex';
+    }
+
+    onPlayerStateChange(state) {
+        const blockedElem = this.activeBtn.btn.closest('.module__video-item').nextElementSibling;
+        const playBtn = this.activeBtn.querySelector('svg').cloneNode(true);
+
+        if (state.data === 0) {
+            if (blockedElem.querySelector('.play__circle').classList.contains('closed')) {
+                blockedElem.querySelector('.play__circle').classList.remove('closed');
+                blockedElem.querySelector('svg').remove();
+                blockedElem.querySelector('.play__circle').appendChild(playBtn);
+                blockedElem.querySelector('.play__text').textContent = 'play video';
+                blockedElem.querySelector('.play__text').classList.remove('attention');
+                blockedElem.style.opacity = 1;
+                blockedElem.style.filter = 'none';
+            }
+        }
     }
 
     init() {
